@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Quiz</title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #000;
+            color: #00ff00;
+            overflow: hidden;
+        }
+        .container {
+            text-align: center;
+        }
+        h1 {
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00, 0 0 15px #00ff00;
+        }
+        #quiz-container {
+            margin-bottom: 20px;
+        }
+        #question {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+        input[type="number"] {
+            padding: 10px;
+            font-size: 1em;
+            border: 2px solid #00ff00;
+            background-color: #000;
+            color: #00ff00;
+            margin-bottom: 10px;
+        }
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: 2px solid #00ff00;
+            background-color: #000;
+            color: #00ff00;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        button:hover {
+            background-color: #00ff00;
+            color: #000;
+        }
+        .hidden {
+            display: none;
+        }
+        .glitch {
+            position: relative;
+            display: inline-block;
+        }
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.8;
+        }
+        .glitch::before {
+            left: 2px;
+            text-shadow: -1px 0 #00ff00;
+            animation: glitch-anim-1 2s infinite linear alternate-reverse;
+        }
+        .glitch::after {
+            left: -2px;
+            text-shadow: 1px 0 #00ff00;
+            animation: glitch-anim-2 2s infinite linear alternate-reverse;
+        }
+        @keyframes glitch-anim-1 {
+            0% { left: 2px; }
+            25% { left: 3px; }
+            50% { left: 2px; }
+            75% { left: 1px; }
+            100% { left: 2px; }
+        }
+        @keyframes glitch-anim-2 {
+            0% { left: -2px; }
+            25% { left: -3px; }
+            50% { left: -2px; }
+            75% { left: -1px; }
+            100% { left: -2px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="glitch" data-text="Решите пример, чтобы перейти">Решите пример, чтобы перейти</h1>
+        <div id="quiz-container">
+            <p id="question" class="glitch" data-text="Решите: "></p>
+            <input type="number" id="answer" placeholder="Введите ответ">
+            <button onclick="checkAnswer()">Проверить</button>
+        </div>
+        <div id="buttons-container" class="hidden">
+            <button class="glitch" data-text="Основной канал" onclick="redirectTo('https://vk.com')">Основной канал</button>
+            <button class="glitch" data-text="Архив" onclick="redirectTo('https://teleg.org')">Архив</button>
+        </div>
+    </div>
+    <script>
+        function generateQuestion() {
+            const operators = ['+', '-', '*', '/'];
+            const operator = operators[Math.floor(Math.random() * operators.length)];
+            const num1 = Math.floor(Math.random() * 10) + 1;
+            const num2 = Math.floor(Math.random() * 10) + 1;
+            const question = `${num1} ${operator} ${num2}`;
+            const answer = eval(question);
+            return { question, answer };
+        }
+
+        function checkAnswer() {
+            const userAnswer = parseFloat(document.getElementById('answer').value);
+            if (userAnswer === currentAnswer) {
+                document.getElementById('quiz-container').classList.add('hidden');
+                document.getElementById('buttons-container').classList.remove('hidden');
+            } else {
+                alert('Неправильный ответ. Попробуйте еще раз.');
+                loadQuestion();
+            }
+        }
+
+        function loadQuestion() {
+            const { question, answer } = generateQuestion();
+            currentAnswer = answer;
+            document.getElementById('question').innerText = `Решите: ${question}`;
+            document.getElementById('question').setAttribute('data-text', `Решите: ${question}`);
+            document.getElementById('answer').value = '';
+        }
+
+        function redirectTo(url) {
+            window.location.href = url;
+        }
+
+        let currentAnswer;
+        loadQuestion();
+
+        // Prevent viewing source code
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.onkeydown = function(e) {
+            if (e.keyCode == 123) {
+                return false;
+            }
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) {
+                return false;
+            }
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) {
+                return false;
+            }
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) {
+                return false;
+            }
+            if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) {
+                return false;
+            }
+        }
+    </script>
+</body>
+</html>
